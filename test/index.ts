@@ -48,4 +48,16 @@ describe('Promise',() => {
     })
     promise.then(fn)
   })
+  it('promise.then(null,fail)中的fail会在reject被调用的时候执行', done => {
+    const fn = sinon.fake()
+    const promise = new Promise((resolve,reject) => {
+      assert.isFalse(fn.called)
+      reject()
+      setTimeout(() => {
+        assert.isTrue(fn.called)
+        done()
+      }, 0)
+    })
+    promise.then(null,fn)
+  })
 })
