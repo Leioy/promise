@@ -5,19 +5,29 @@ class Promise2 {
     if (typeof fn !== 'function') {
       throw new Error('Promise只接受一个函数')
     }
-    fn(() => {
-      setTimeout(() => {
+    fn(this.resolve.bind(this), this.reject.bind(this))
+  }
+  resolve () {
+    setTimeout(() => {
+      if (typeof this.succeed === 'function') {
         this.succeed()
-      }, 0)
-    }, () => {
-      setTimeout(() => {
+      }
+    }, 0)
+  }
+  reject () {
+    setTimeout(() => {
+      if (typeof this.fail === 'function') {
         this.fail()
-      }, 0)
-    })
+      }
+    }, 0)
   }
   then (succeed?,fail?) {
-    this.succeed = succeed
-    this.fail = fail
+    if (typeof succeed === 'function') {
+      this.succeed = succeed
+    }
+    if (typeof fail === 'function') {
+      this.fail = fail
+    }
   }
 }
 

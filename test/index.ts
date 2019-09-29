@@ -60,4 +60,10 @@ describe('Promise',() => {
     })
     promise.then(null,fn)
   })
+  it('Promise/A+ 2.2.1 then的两个参数都是可选参数，并且如果不是函数必须忽略', () => {
+    const promise = new Promise((resolve,reject) => {
+      resolve()
+    })
+    promise.then(false,null)
+  })
 })
