@@ -30,4 +30,10 @@ describe('Promise',() => {
     new Promise(fn)
     assert(fn.called)
   })
+  it('new Promise(fn)中的fn接受resolve和reject两个函数', () => {
+    new Promise((resolve,reject) => {
+      assert.isFunction(resolve)
+      assert.isFunction(reject)
+    })
+  })
 })

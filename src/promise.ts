@@ -3,7 +3,7 @@ class Promise2 {
     if (typeof fn !== 'function') {
       throw new Error('Promise只接受一个函数')
     }
-    fn()
+    fn(() => {}, () => {})
   }
   then () {}
 }
