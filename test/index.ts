@@ -6,4 +6,16 @@ describe('Promise',() => {
     assert.isFunction(Promise)
     assert.isObject(Promise.prototype)
   })
+  it('new Promise必须接受一个函数', () => {
+    assert.throw(() => {
+      // @ts-ignore
+      new Promise()
+    })
+    assert.throw(() => {
+      new Promise(1)
+    })
+    assert.throw(() => {
+      new Promise(false)
+    })
+  })
 })
