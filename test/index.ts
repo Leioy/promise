@@ -120,4 +120,14 @@ describe('Promise',() => {
       done()
     }, 0)
   })
+  it('Promise/A+ 2.2.5', done => {
+    const promise = new Promise(resolve => {
+      resolve()
+    })
+    promise.then(function () {
+      'use strict'
+      assert(this === undefined)
+      done()
+    })
+  })
 })
