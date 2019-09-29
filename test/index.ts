@@ -66,4 +66,20 @@ describe('Promise',() => {
     })
     promise.then(false,null)
   })
+  it('Promise/A+ 2.2.2', done => {
+    const fn = sinon.fake()
+    const promise = new Promise((resolve) => {
+      assert.isFalse(fn.called)
+      resolve(233)
+      resolve(2333)
+      setTimeout(() => {
+        assert(promise.state === 'fulfilled')
+        assert.isTrue(fn.called)
+        assert(fn.calledWith(233))
+        done()
+      }, 0)
+    })
+    promise.then(fn)
+  })
+  
 })

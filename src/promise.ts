@@ -1,16 +1,19 @@
 class Promise2 {
   succeed = null
   fail = null
+  state = 'pending'
   constructor (fn) {
     if (typeof fn !== 'function') {
       throw new Error('Promise只接受一个函数')
     }
     fn(this.resolve.bind(this), this.reject.bind(this))
   }
-  resolve () {
+  resolve (result) {
+    if (this.state !== 'pending') return
+    this.state = 'fulfilled'
     setTimeout(() => {
       if (typeof this.succeed === 'function') {
-        this.succeed()
+        this.succeed(result)
       }
     }, 0)
   }
