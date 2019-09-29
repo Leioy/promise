@@ -36,4 +36,16 @@ describe('Promise',() => {
       assert.isFunction(reject)
     })
   })
+  it('promise.then(success)中的success会在resolve被调用的时候执行', done => {
+    const fn = sinon.fake()
+    const promise = new Promise((resolve) => {
+      assert.isFalse(fn.called)
+      resolve()
+      setTimeout(() => {
+        assert.isTrue(fn.called)
+        done()
+      }, 0)
+    })
+    promise.then(fn)
+  })
 })
