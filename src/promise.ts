@@ -4,6 +4,7 @@ class Promise2 {
       throw new Error('Promise只接受一个函数')
     }
   }
+  then () {}
 }
 
 export default Promise2
