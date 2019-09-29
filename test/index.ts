@@ -81,5 +81,19 @@ describe('Promise',() => {
     })
     promise.then(fn)
   })
-  
+  it('Promise/A+ 2.2.3', done => {
+    const fn = sinon.fake()
+    const promise = new Promise((resolve,reject) => {
+      assert.isFalse(fn.called)
+      reject(233)
+      reject(2333)
+      setTimeout(() => {
+        assert(promise.state === 'rejected')
+        assert.isTrue(fn.called)
+        assert(fn.calledWith(233))
+        done()
+      }, 0)
+    })
+    promise.then(null,fn)
+  })
 })

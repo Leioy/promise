@@ -17,10 +17,12 @@ class Promise2 {
       }
     }, 0)
   }
-  reject () {
+  reject (reason) {
+    if (this.state !== 'pending') return
+    this.state = 'rejected'
     setTimeout(() => {
       if (typeof this.fail === 'function') {
-        this.fail()
+        this.fail(reason)
       }
     }, 0)
   }
