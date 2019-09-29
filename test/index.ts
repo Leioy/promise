@@ -96,4 +96,28 @@ describe('Promise',() => {
     })
     promise.then(null,fn)
   })
+  it('Promise/A+ 2.2.4 在我的代码执行完成之前，不得调用then后面的两个函数', done => {
+    const fn = sinon.fake()
+    const promise = new Promise((resolve,reject) => {
+      resolve()
+    })
+    promise.then(fn)
+    assert.isFalse(fn.called)
+    setTimeout(() => {
+      assert.isTrue(fn.called)
+      done()
+    }, 0)
+  })
+  it('Promise/A+ 2.2.4 在我的代码执行完成之前，不得调用then后面的两个函数', done => {
+    const fn = sinon.fake()
+    const promise = new Promise((resolve,reject) => {
+      reject()
+    })
+    promise.then(null,fn)
+    assert.isFalse(fn.called)
+    setTimeout(() => {
+      assert.isTrue(fn.called)
+      done()
+    }, 0)
+  })
 })
