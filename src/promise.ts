@@ -10,10 +10,15 @@ class Promise2 {
   resolve (result) {
     if (this.state !== 'pending') return
     this.state = 'fulfilled'
-    setImmediate(() => {
+    process.nextTick(() => {
       this.callbacks.forEach(callback => {
         if (typeof callback[0] === 'function') {
-          const x = callback[0].call(undefined,result)
+          let x
+          try {
+             x = callback[0].call(undefined,result)
+          } catch (e) {
+            return callback[2].reject(e)
+          }
           callback[2].resolveWith(x)
         }
       })
@@ -22,10 +27,15 @@ class Promise2 {
   reject (reason) {
     if (this.state !== 'pending') return
     this.state = 'rejected'
-    setImmediate(() => {
+    process.nextTick(() => {
       this.callbacks.forEach(callback => {
         if (typeof callback[1] === 'function') {
-          const x = callback[1].call(undefined,reason)
+          let x
+          try {
+            x = callback[1].call(undefined,reason)
+          } catch (e) {
+            return callback[2].reject(e)
+          }
           callback[2].resolveWith(x)
         }
       })
