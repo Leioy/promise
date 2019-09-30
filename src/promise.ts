@@ -38,6 +38,7 @@ class Promise2 {
       handler[1] = fail
     }
     this.callbacks.push(handler)
+    return new Promise2(() => {})
   }
 }
 
