@@ -18,5 +18,8 @@
   },
   "scripts": {
     "test": "mocha -r ts-node/register **/*.ts"
+  },
+  "dependencies": {
+    "@types/node": "^12.7.8"
   }
 }
