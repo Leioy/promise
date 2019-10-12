@@ -10,7 +10,7 @@ class Promise2 {
   resolve (result) {
     if (this.state !== 'pending') return
     this.state = 'fulfilled'
-    process.nextTick(() => {
+    nextTick(() => {
       this.callbacks.forEach(callback => {
         if (typeof callback[0] === 'function') {
           let x
@@ -22,12 +22,12 @@ class Promise2 {
           callback[2].resolveWith(x)
         }
       })
-    }, 0)
+    })
   }
   reject (reason) {
     if (this.state !== 'pending') return
     this.state = 'rejected'
-    process.nextTick(() => {
+    nextTick(() => {
       this.callbacks.forEach(callback => {
         if (typeof callback[1] === 'function') {
           let x
@@ -39,7 +39,7 @@ class Promise2 {
           callback[2].resolveWith(x)
         }
       })
-    }, 0)
+    })
   }
   resolveWith (x) {
     if (this === x) {
@@ -98,3 +98,18 @@ class Promise2 {
 }
 
 export default Promise2
+
+function nextTick (fn) {
+  if (process && typeof process.nextTick === 'function') {
+    return process.nextTick(fn)
+  } else {
+    var counter = 1
+    var observer = new MutationObserver(fn)
+    var textNode = document.createTextNode(String(counter))
+    observer.observe(textNode, {
+      characterData: true
+    })
+    counter = counter + 1
+    textNode.data = String(counter)
+  }
+}
