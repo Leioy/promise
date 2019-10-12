@@ -7,15 +7,15 @@ class Promise2 {
     }
     fn(this.resolve.bind(this), this.reject.bind(this))
   }
-  resolve (result) {
+  private resolveOrReject (state,data,i) {
     if (this.state !== 'pending') return
-    this.state = 'fulfilled'
+    this.state = state
     nextTick(() => {
       this.callbacks.forEach(callback => {
-        if (typeof callback[0] === 'function') {
+        if (typeof callback[i] === 'function') {
           let x
           try {
-             x = callback[0].call(undefined,result)
+             x = callback[i].call(undefined,data)
           } catch (e) {
             return callback[2].reject(e)
           }
@@ -23,38 +23,28 @@ class Promise2 {
         }
       })
     })
+  }
+  resolve (result) {
+    this.resolveOrReject('fulfilled',result,0)
   }
   reject (reason) {
-    if (this.state !== 'pending') return
-    this.state = 'rejected'
-    nextTick(() => {
-      this.callbacks.forEach(callback => {
-        if (typeof callback[1] === 'function') {
-          let x
-          try {
-            x = callback[1].call(undefined,reason)
-          } catch (e) {
-            return callback[2].reject(e)
-          }
-          callback[2].resolveWith(x)
-        }
-      })
-    })
+    this.resolveOrReject('rejected',reason,1)
   }
-  resolveWith (x) {
-    if (this === x) {
-      this.reject(new TypeError())
-    } else if (x instanceof Promise2) {
-      x.then(
-        result => {
-          this.resolve(result)
-        },
-        reason => {
-          this.reject(reason)
-        }
-      )
-    } else if (x instanceof Object) {
-      let then
+  resolveWithSelf () {
+    this.reject(new TypeError())
+  }
+  resolveWithPromise (x) {
+    x.then(
+      result => {
+        this.resolve(result)
+      },
+      reason => {
+        this.reject(reason)
+      }
+    )
+  }
+  resolveWithObject (x) {
+    let then
       try {
         then = x.then
       } catch (e) {
@@ -79,6 +69,14 @@ class Promise2 {
       } else {
         this.resolve(x)
       }
+  }
+  resolveWith (x) {
+    if (this === x) {
+      this.resolveWithSelf()
+    } else if (x instanceof Promise2) {
+      this.resolveWithPromise(x)
+    } else if (x instanceof Object) {
+      this.resolveWithObject(x)
     } else {
       this.resolve(x)
     }
